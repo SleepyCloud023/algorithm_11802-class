@@ -18,7 +18,8 @@ int dfs_search(node *root_node, int level);
 
 int main(){
     int num_char, i, j,freq, size;
-    node *min_heap;
+    node **min_heap;
+    node *new_element, *small_1, *small_2;
     int origin_bit;
     int total_bits = 0;
     int total_compressed_bits = 0;
@@ -27,13 +28,14 @@ int main(){
     //input session
     scanf("%d", &num_char);
     size = num_char;
-    min_heap = (node*)calloc(num_char, sizeof(node));
+    min_heap = (node**)calloc(num_char, sizeof(node*));
     for(i = 0; i < num_char; i++){
         scanf("%s %d", alpha_4, freq);
-        strcpy(min_heap[i].chars, alpha_4);
-        min_heap[i].freq = freq;
-        min_heap[i].left = NULL;
-        min_heap[i].right = NULL;
+        new_element = (node*)malloc(sizeof(node));
+        strcpy(new_element->chars, alpha_4);
+        new_element->freq = freq;
+        new_element->left = NULL;
+        new_element->right = NULL;
     }
     scanf("%d", &total_bits);
 
@@ -47,9 +49,14 @@ int main(){
 
     // construct huffman tree
     while(size > 1){
-        
+        small_1 = heappop(min_heap, size);
+        small_2 = heappop(min_heap, size);
+        new_element = (node*)malloc(sizeof(node));
+        strcpy(new_element->chars, "internal_node");
+        new_element->freq = small_1->freq + small_2->freq;
+        new_element->left = small_1;
+        new_element->right = small_2;
     }
-
 
     total_compressed_bits = dfs_search(&min_heap[0], 0);
     printf("%d\n", total_bits);
