@@ -20,8 +20,7 @@ typedef int (*fp)(xy_weight, xy_weight);
 
 void merge(xy_weight *arr, int low, int high, int mid, fp is_left_small);
 void merge_sort(xy_weight *arr, int low, int high, fp is_left_small);
-int xy_is_left_small(xy_weight left, xy_weight right);
-int weight_is_left_small(xy_weight left, xy_weight right);
+int compare(xy_weight left, xy_weight right);
 node* find_set(node *t_node);
 void union_set(node *left, node *right);
 
@@ -60,10 +59,8 @@ int main(){
     }
 
     //merge sort is stable
-    //sort by x,y by increasing order
-    merge_sort(edge_weights, 0, num_E - 1, xy_is_left_small);
-    //sort by weight increasing order
-    merge_sort(edge_weights, 0, num_E - 1, weight_is_left_small);
+    //sort by x,y and weight by increasing order
+    merge_sort(edge_weights, 0, num_E - 1, compare);
 
     //find V-1 edges
     for(i = 0; i < num_V - 1; i++){
@@ -157,18 +154,17 @@ void merge(xy_weight *arr, int low, int high, int mid, fp is_left_small){
     free(space_for_merge);
 }
 
-//return 1 if left.x <= right.x or (left.x == right.x and left.y <= right.y)
-int xy_is_left_small(xy_weight left, xy_weight right){
+//return 1 if left is small
+int compare(xy_weight left, xy_weight right){
     int is_small = 0;
-    if(left.x < right.x) is_small = 1;
-    if(left.x == right.x && left.y < right.y) is_small = 1;
+    if(left.weight < right.weight){
+        is_small = 1;
+    }
+    if (left.weight == right.weight){
+        if (left.x < right.x) is_small = 1;
+        if (left.x == right.x && left.y < right.y) is_small = 1;
+    }
     return is_small;
 }
 
-//return 1 if left.weight < right.weight
-int weight_is_left_small(xy_weight left, xy_weight right){
-    int is_small = 0;
-    if(left.weight <= right.weight) is_small = 1;
-    return is_small;
-}
 
